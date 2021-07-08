@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Big School</h1>
+    
+</div>
+
+<div class="row">
+    <ul class="course">
+        @foreach(var course in Model)
+            {
+                <li>
+                    <div class="date">
+                        <div class="month">
+                             @course.DateTime.ToString("MM")
+                        </div>
+                        <div class="day">
+                            @course.DateTime.ToString("dd")
+                        </div>
+                    </div>
+                    <div class="details">
+                        <span class="lecture">
+                            @course.Name
+                        </span>
+                        <span class="category">
+                            @course.Category.Name
+                        </span>
+                        <button data-course-id="@course.Id" class="btn btn-default btn-sm js-tongle-attendance">Going?</button>
+                    </div>
+                </li>
+            }
+    </ul>
+    @section scripts{
+        <script>
+            $(document).ready(function () {
+                $(".js-tongle-attendance").click(function (e) {
+                    var button = $(e.target);
+                    $.post("/api/attendances", { Id: button.attr("data-course-id") })
+                        .done(function () {
+                            alert("register course sucessfully!")
+                            button
+                                .removeClass("btn-default")
+                                .addClass("btn-info")
+                                .text("going");
+                        }).fail(function () {
+                            alert("Something fail");
+                        });
+                });
+            });
+            </script>}
+</div>
+
+<style>
+    .navbar-inverse {
+        background-color: #d41d50;
+        border-color: #fbf6f6;
+    }
+
+        .navbar-inverse .navbar-nav > li > a {
+            color: white;
+        }
+
+        .navbar-inverse .navbar-brand {
+            color: white;
+        }
+
+    .course {
+        list-style: none;
+    }
+
+        .course > li {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+            .course > li .date {
+                text-align: center;
+                background-color: #d41d50;
+                color: white;
+                width: 60px;
+                border-radius: 8px;
+            }
+
+            .course > li .details {
+                position: absolute;
+                top: 0;
+                left: 70px;
+            }
+
+            .course > li .lecture {
+            }
+
+            .course > li .category {
+            }
+
+            .course > li .acticon {
+                display: none;
+                left: 70px;
+                position: absolute;
+            }
+
+            .course > li:hover .acticon {
+                display: block;
+            }
+</style>
